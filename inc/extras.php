@@ -13,59 +13,28 @@
  * @param array $classes Classes for the body element.
  * @return array
  */
-function wp_theme_boilerplate_body_classes( $classes ) {
-	// Adds a class of group-blog to blogs with more than 1 published author.
-	if ( is_multi_author() ) {
-		$classes[] = 'group-blog';
-	}
+function wp_theme_boilerplate_body_classes($classes)
+{
+    // Adds a class of group-blog to blogs with more than 1 published author.
+    if (is_multi_author()) {
+        $classes[] = 'group-blog';
+    }
 
-	return $classes;
+    return $classes;
 }
-add_filter( 'body_class', 'wp_theme_boilerplate_body_classes' );
 
-if ( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) :
-	/**
-	 * Filters wp_title to print a neat <title> tag based on what is being viewed.
-	 *
-	 * @param string $title Default title text for current view.
-	 * @param string $sep Optional separator.
-	 * @return string The filtered title.
-	 */
-	function wp_theme_boilerplate_wp_title( $title, $sep ) {
-		if ( is_feed() ) {
-			return $title;
-		}
+add_filter('body_class', 'wp_theme_boilerplate_body_classes');
 
-		global $page, $paged;
 
-		// Add the blog name.
-		$title .= get_bloginfo( 'name', 'display' );
+add_filter('pre_get_document_title', 'wp_boilerplate_custom_titles', 100);
 
-		// Add the blog description for the home/front page.
-		$site_description = get_bloginfo( 'description', 'display' );
-		if ( $site_description && ( is_home() || is_front_page() ) ) {
-			$title .= " $sep $site_description";
-		}
+function wp_theme_boilerplate_custom_title($title)
+{
+    global $post;
 
-		// Add a page number if necessary.
-		if ( ( $paged >= 2 || $page >= 2 ) && ! is_404() ) {
-			$title .= " $sep " . sprintf( esc_html__( 'Page %s', 'wp-theme-boilerplate' ), max( $paged, $page ) );
-		}
+    if (is_single() || is_page()) {
+        $title = get_the_title($post->ID) . ' | ' . get_bloginfo('title', 'display');
+    }
 
-		return $title;
-	}
-	add_filter( 'wp_title', 'wp_theme_boilerplate_wp_title', 10, 2 );
-
-	/**
-	 * Title shim for sites older than WordPress 4.1.
-	 *
-	 * @link https://make.wordpress.org/core/2014/10/29/title-tags-in-4-1/
-	 * @todo Remove this function when WordPress 4.3 is released.
-	 */
-	function wp_theme_boilerplate_render_title() {
-		?>
-		<title><?php wp_title( '|', true, 'right' ); ?></title>
-		<?php
-	}
-	add_action( 'wp_head', 'wp_theme_boilerplate_render_title' );
-endif;
+    return $title;
+}
