@@ -1,6 +1,24 @@
 /**
  *
- * Run: $ gulp
+ * Run: 
+ * $ npm install
+ * $ bower install
+ * $ gulp
+ * 
+ * 
+ * Folder structure
+ * 
+ * Source
+ * ./assets
+ *      => coffee/
+ *      => sass/
+ *      => img/
+ *
+ * Dist
+ * ./public
+ *      => js/
+ *      => css/
+ *      => img/
  *
  * */
 var gulp = require('gulp');
@@ -13,7 +31,7 @@ var imageop = require('gulp-image-optimization');
 gulp.task('serve', ['sass','images','coffee'], function () {
 
     browserSync.init({
-        proxy: "http://wptest.dev",
+        proxy: "http://boilerplate.dev",
         port: 5000
     });
 
