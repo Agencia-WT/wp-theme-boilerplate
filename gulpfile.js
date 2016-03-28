@@ -26,6 +26,10 @@ var browserSync = require('browser-sync').create();
 var sass = require('gulp-sass');
 var coffee = require('gulp-coffee');
 var gutil = require('gulp-util');
+var concat = require('gulp-concat');
+var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
+var cleanCSS = require('gulp-clean-css');
 var imageop = require('gulp-image-optimization');
 
 gulp.task('serve', ['sass','images','coffee'], function () {
@@ -36,7 +40,7 @@ gulp.task('serve', ['sass','images','coffee'], function () {
     });
 
     gulp.watch("assets/sass/**/*.scss", ['sass']);
-    gulp.watch("assets/coffee/**/*.coffee", ['coffee']);
+    gulp.watch("assets/coffee/**/*.coffee", ['coffee', 'js-concat']);
     gulp.watch([
             'assets/img/**/*.png',
             'assets/img/**/*.jpg',
@@ -50,6 +54,9 @@ gulp.task('serve', ['sass','images','coffee'], function () {
 gulp.task('sass', function () {
     return gulp.src("assets/sass/*.scss")
         .pipe(sass({errLogToConsole: true}))
+        .pipe(rename('styles.css'))
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(rename('styles.min.css'))
         .pipe(gulp.dest("public/css"))
         .pipe(browserSync.stream());
 });
@@ -57,7 +64,16 @@ gulp.task('sass', function () {
 gulp.task('coffee', function () {
     gulp.src('assets/coffee/*.coffee')
         .pipe(coffee({bare: true}).on('error', gutil.log))
-        .pipe(gulp.dest('./public/js/'))
+        .pipe(gulp.dest('./public/js/src'))
+});
+
+gulp.task('js-concat', function () {
+    return gulp.src("public/js/src/*")
+        .pipe(concat('scripts.js'))
+        .pipe(gulp.dest('public/js'))
+        .pipe(rename('scripts.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('images', function (cb) {
