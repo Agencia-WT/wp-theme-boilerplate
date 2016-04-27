@@ -29,5 +29,5 @@ $mq-static-breakpoint: desktop;
 $mq-show-breakpoints: (mobile, mobileLandscape, tablet, desktop, wide);
 
 // SASSMQ
-@import "../../../public/components/sass-mq/sass/index";
+@import "../../../public/components/sass-mq/mq";
 
