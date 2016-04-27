@@ -26,7 +26,7 @@ function wp_theme_boilerplate_body_classes($classes)
 add_filter('body_class', 'wp_theme_boilerplate_body_classes');
 
 
-add_filter('pre_get_document_title', 'wp_boilerplate_custom_titles', 100);
+# add_filter('pre_get_document_title', 'wp_boilerplate_custom_titles', 100);
 
 function wp_theme_boilerplate_custom_title($title)
 {
